@@ -1,0 +1,14 @@
+{
+  "items": {
+    "00700": {"name":"腾讯控股","pe_ttm":14.6,"gr1y":15.8,"type":"A","capex_yoy":176,"buyback":"-","beta":"弱"},
+    "9988":  {"name":"阿里巴巴-W","pe_ttm":13.0,"gr1y":18.0,"type":"A","capex_yoy":60,"buyback":"强","beta":"强"},
+    "3690":  {"name":"美团-W","pe_ttm":35.0,"gr1y":25.0,"type":"A","capex_yoy":40,"buyback":"中","beta":"强"},
+    "1810":  {"name":"小米集团-W","pe_ttm":17.9,"gr1y":-57.5,"type":"C","capex_yoy":50,"buyback":"中","beta":"强"},
+    "9868":  {"name":"小鹏汽车-W","pe_ttm":null,"gr1y":-30.0,"type":"C","capex_yoy":80,"buyback":"弱","beta":"强"},
+    "300308":{"name":"中际旭创","pe_ttm":29.2,"gr1y":242.0,"type":"B","capex_yoy":40,"buyback":"中","beta":"强"},
+    "300502":{"name":"新易盛","pe_ttm":41.7,"gr1y":91.0,"type":"C","capex_yoy":45,"buyback":"中","beta":"强"},
+    "002415":{"name":"海康威视","pe_ttm":18.5,"gr1y":40.0,"type":"A","capex_yoy":20,"buyback":"中","beta":"中"},
+    "300750":{"name":"宁德时代","pe_ttm":18.0,"gr1y":42.0,"type":"A","capex_yoy":35,"buyback":"中","beta":"中"},
+    "002475":{"name":"立讯精密","pe_ttm":24.1,"gr1y":18.0,"type":"A","capex_yoy":25,"buyback":"中","beta":"中"}
+  }
+}
