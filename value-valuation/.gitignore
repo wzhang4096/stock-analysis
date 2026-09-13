@@ -1,17 +1,15 @@
-# Python
+# Python 编译产物
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyc
-*.egg-info/
+*$py.class
+*.so
+
+# 测试/缓存
+.pytest_cache/
+.mypy_cache/
 .venv/
-venv/
+*.egg-info/
 
-# IDE
-.vscode/
-.idea/
-
-# 本地数据缓存（不入库）
-*.json
-!scripts/*.json
-.DS_Store
+# 本地数据（勿入库）
+*.json    # 抓取数据（q.json/k.json/f.json）
+*.csv
