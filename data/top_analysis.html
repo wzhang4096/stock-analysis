@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三市场科技股Top10 综合估值排序分析</title>
+<style>
+  :root {
+    --bg: #0f1117; --card-bg: #171a23; --border: #262a36; --text: #d6d9e0;
+    --muted: #8b90a0; --accent: #5b8def; --code-bg: #1e222d;
+    --green: #a6e3a1; --yellow: #f0d86e; --orange: #f0b862; --red: #f07979;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", Segoe UI, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.7;
+  }
+  #main { max-width: 1100px; margin: 0 auto; padding: 32px 24px 80px; }
+  header.page-header { margin-bottom: 28px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+  header.page-header h1 { font-size: 24px; margin: 0 0 10px; color: #fff; }
+  header.page-header .meta { color: var(--muted); font-size: 13px; }
+  .banner {
+    background: #2a2410; border: 1px solid #5a4a1a; border-radius: 8px;
+    padding: 14px 18px; margin-bottom: 28px; font-size: 13.5px; color: var(--yellow);
+  }
+  h2.sec-title {
+    font-size: 18px; color: #fff; margin: 36px 0 14px; padding-left: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h3.sub-title { font-size: 15px; color: var(--accent); margin: 22px 0 10px; }
+  p { font-size: 14px; color: var(--text); margin: 8px 0; }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px 20px; margin-bottom: 18px;
+  }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+  th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
+  th { background: #1c2030; color: var(--accent); font-weight: 600; white-space: nowrap; }
+  tr:nth-child(even) { background: #14161f; }
+  td strong { color: var(--green); }
+  code { background: var(--code-bg); color: #ffb86c; padding: 1px 6px; border-radius: 4px; font-size: 12.5px; font-family: SFMono-Regular, Consolas, monospace; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+  .tag-1 { background: #1d3a20; color: var(--green); }
+  .tag-2 { background: #2f3a1a; color: var(--yellow); }
+  .tag-3 { background: #3a2e10; color: var(--orange); }
+  .tag-4 { background: #3a1a1a; color: var(--red); }
+  .qa-block { margin-bottom: 40px; }
+  .question-box {
+    background: #14202e; border: 1px solid #274a6b; border-radius: 8px;
+    padding: 14px 18px; margin-bottom: 20px; font-size: 14.5px; color: #a9d4ff;
+  }
+  .question-box .q-label { color: var(--accent); font-weight: 700; margin-right: 6px; }
+  ul { margin: 8px 0; padding-left: 22px; font-size: 14px; }
+  li { margin: 4px 0; }
+  footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; }
+  .disclaimer { background: #241414; border: 1px solid #4a2020; border-radius: 8px; padding: 16px 20px; margin-top: 24px; }
+  .disclaimer h3 { color: var(--red); margin-top: 0; }
+  .disclaimer ol { font-size: 13px; color: var(--muted); }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: #2a2f3d; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div id="main">
+
+<header class="page-header">
+  <h1>三市场科技股Top10 综合估值排序分析</h1>
+  <div class="meta">生成时间：2026-09-14 &nbsp;|&nbsp; 方法论来源：<code>github.com/wzhang4096/stock-analysis/value-valuation</code> Skill（PE-TTM多窗口分位 + 盈利趋势分型A/B/C/D + 三道关 + 四过滤 + 六维打分跨市场排名）</div>
+</header>
+
+<div class="banner">
+⚠️ 执行前置说明：受限于无法调用该 Skill 依赖的 <code>westock</code> 实时数据接口（历史PE序列、季度财报滚动数据），本次分析未执行真正的"多窗口历史PE分位统计"，改用公开市场最新可得的市值/PE/增速/ROE等截面数据，按方法论的分型算法、三道关、四过滤思路、六维打分框架进行结构化推演。分位判断为定性水位替代精确分位数，数据为估算近似值，不构成投资建议，具体请以交易所/财报官方数据核实。
+</div>
+
+<div class="qa-block">
+  <div class="question-box"><span class="q-label">Q1</span>读取Skill：https://github.com/wzhang4096/stock-analysis/tree/main/value-valuation，综合A股市值前10科技股，港股市值前10科技股，美股市值前10科技股，以上述方法进行评估分析并排序</div>
+
+  <h2 class="sec-title">一、三市场标的池</h2>
+  <div class="card">
+    <table>
+      <tr><th>市场</th><th>Top10（按总市值）</th></tr>
+      <tr><td><strong>A股</strong>（申万：电子/半导体/通信/电力设备/计算机）</td><td>长鑫科技、宁德时代、中芯国际、工业富联、中际旭创、立讯精密、海光信息、寒武纪、新易盛、京东方A</td></tr>
+      <tr><td><strong>港股</strong>（恒生科技核心成分）</td><td>腾讯控股、阿里巴巴-W、小米集团-W、美团-W、中芯国际(H)、网易、京东集团-SW、快手-W、联想集团、携程集团-S</td></tr>
+      <tr><td><strong>美股</strong>（NDX10核心）</td><td>NVIDIA、Apple、Microsoft、Alphabet、Amazon、Meta、Broadcom、Tesla、Oracle、AMD</td></tr>
+    </table>
+  </div>
+
+  <h2 class="sec-title">二、分型判定（A/B/C/D，字段4必答）</h2>
+
+  <h3 class="sub-title">A股</h3>
+  <div class="card">
+    <table>
+      <tr><th>标的</th><th>gr1y/CAGR3(估)</th><th>ROE</th><th>CV/slope特征</th><th>分型</th><th>依据</th><th>三道关松紧</th></tr>
+      <tr><td>长鑫科技</td><td>净利同比高增（存储涨价周期）</td><td>中等偏高</td><td>存储属周期属性强，历史净利波动大</td><td><span class="tag tag-3">C</span></td><td>CV&gt;0.5（存储价格强周期）</td><td>关①看周期位+拐点，禁用单一PE</td></tr>
+      <tr><td>宁德时代</td><td>净利同比双位数、CAGR3中高</td><td>~20%+</td><td>增速趋缓但稳定</td><td><span class="tag tag-1">A</span></td><td>gr1y&gt;0、ROE稳定，未达B型阈值</td><td>宽松</td></tr>
+      <tr><td>中芯国际</td><td>净利同比高波动（半导体资本周期）</td><td>偏低（重资产）</td><td>历史净利大幅波动</td><td><span class="tag tag-3">C</span></td><td>晶圆代工景气周期强相关</td><td>禁用单一PE，用PB/PS</td></tr>
+      <tr><td>工业富联</td><td>AI服务器订单驱动，净利同比高增</td><td>中等</td><td>增速&gt;50%（AI资本开支拉动）</td><td><span class="tag tag-2">B</span></td><td>gr1y&gt;50%</td><td>关③最严，看订单持续性</td></tr>
+      <tr><td>中际旭创</td><td>净利同比+242%量级（光模块AI需求）</td><td>高</td><td>增速极高但基数效应明显</td><td><span class="tag tag-2">B</span></td><td>gr1y远超50%、CAGR3&gt;40%</td><td>关③最严</td></tr>
+      <tr><td>立讯精密</td><td>净利同比双位数稳定增长</td><td>~20%</td><td>消费电子代工，波动中等</td><td><span class="tag tag-1">A</span></td><td>稳定成长，未现CV&gt;0.5</td><td>宽松</td></tr>
+      <tr><td>海光信息</td><td>净利同比高增但基数低</td><td>偏低</td><td>国产CPU/GPU放量期</td><td><span class="tag tag-2">B</span></td><td>gr1y高增速</td><td>关③最严</td></tr>
+      <tr><td>寒武纪</td><td>扭亏为盈/净利高速增长</td><td>波动大</td><td>历史多年亏损后爆发</td><td><span class="tag tag-2">B</span>（需确认连续性）</td><td>gr1y高增速，需警示历史D</td><td>关③最严，防增速证伪</td></tr>
+      <tr><td>新易盛</td><td>净利同比+91%量级</td><td>高</td><td>光模块高景气</td><td><span class="tag tag-2">B</span></td><td>gr1y&gt;50%</td><td>关③最严</td></tr>
+      <tr><td>京东方A</td><td>净利同比波动大（面板周期）</td><td>偏低</td><td>面板价格强周期</td><td><span class="tag tag-3">C</span></td><td>历史CV高</td><td>禁用单一PE</td></tr>
+    </table>
+    <p><strong>A股结构特征：</strong>10只中 B型（高速成长）占5席、C型（强周期）占3席、A型仅2席，反映当前A股科技股主要由AI算力/存储/光模块景气周期驱动，估值分位低≠低估，需重点执行关③（PEG增速兑现）和C型的"周期位置+拐点"判断。</p>
+  </div>
+
+  <h3 class="sub-title">港股</h3>
+  <div class="card">
+    <table>
+      <tr><th>标的</th><th>gr1y/CAGR3(估)</th><th>ROE</th><th>分型</th><th>依据</th><th>三道关松紧</th></tr>
+      <tr><td>腾讯控股</td><td>净利同比双位数、稳定</td><td>~20%</td><td><span class="tag tag-1">A</span></td><td>稳定成长，游戏+广告+金融科技现金流稳定</td><td>宽松</td></tr>
+      <tr><td>阿里巴巴-W</td><td>净利同比中等，云+AI投入期</td><td>中等</td><td><span class="tag tag-1">A</span>（估值端）/需警示C2</td><td>关注Capex-FCF扣分</td><td>关②口径校验（核心电商vs集团差异大）</td></tr>
+      <tr><td>小米集团-W</td><td>净利同比高增（汽车+高端化）</td><td>中等偏高</td><td><span class="tag tag-2">B</span></td><td>汽车业务放量驱动，增速&gt;50%</td><td>关③最严，看汽车交付兑现</td></tr>
+      <tr><td>美团-W</td><td>净利同比承压（本地生活竞争+海外投入）</td><td>波动</td><td><span class="tag tag-3">C</span>偏D风险</td><td>净利波动大，竞争格局影响利润</td><td>关①需警惕陷阱</td></tr>
+      <tr><td>中芯国际(H)</td><td>同A股，周期属性</td><td>偏低</td><td><span class="tag tag-3">C</span></td><td>同上</td><td>禁用单一PE</td></tr>
+      <tr><td>网易</td><td>净利同比稳定双位数</td><td>高</td><td><span class="tag tag-1">A</span></td><td>游戏业务现金流稳定</td><td>宽松</td></tr>
+      <tr><td>京东集团-SW</td><td>净利同比稳定，零售主业</td><td>中等</td><td><span class="tag tag-1">A</span></td><td>稳定成长</td><td>宽松</td></tr>
+      <tr><td>快手-W</td><td>净利同比高增（电商+广告变现提速）</td><td>快速改善</td><td><span class="tag tag-2">B</span></td><td>增速仍处兑现验证期</td><td>关③较严</td></tr>
+      <tr><td>联想集团</td><td>净利同比波动（PC周期+AI服务器）</td><td>偏低</td><td><span class="tag tag-3">C</span></td><td>PC/服务器行业周期性强</td><td>禁用单一PE</td></tr>
+      <tr><td>携程集团-S</td><td>净利同比稳定恢复增长</td><td>中高</td><td><span class="tag tag-1">A</span></td><td>出行复苏后趋稳</td><td>宽松</td></tr>
+    </table>
+  </div>
+
+  <h3 class="sub-title">美股</h3>
+  <div class="card">
+    <table>
+      <tr><th>标的</th><th>gr1y/CAGR3(估)</th><th>ROE</th><th>分型</th><th>依据</th><th>三道关松紧</th></tr>
+      <tr><td>NVIDIA</td><td>净利同比仍高增，但增速边际放缓</td><td>极高(60%+)</td><td><span class="tag tag-2">B</span>（增速仍&gt;50%量级）</td><td>AI芯片需求驱动</td><td>关③最严，看数据中心资本开支持续性</td></tr>
+      <tr><td>Apple</td><td>净利同比个位数~双位数稳定</td><td>极高（回购驱动）</td><td><span class="tag tag-1">A</span></td><td>稳定成长现金流机器</td><td>宽松，关注C3回购力度是否维持</td></tr>
+      <tr><td>Microsoft</td><td>净利同比双位数、云+AI订阅</td><td>高</td><td><span class="tag tag-1">A</span></td><td>稳定成长，但Capex高企需关注C2</td><td>基本宽松，C2需打折</td></tr>
+      <tr><td>Alphabet</td><td>净利同比双位数、云+广告双引擎</td><td>高</td><td><span class="tag tag-1">A</span></td><td>稳定成长</td><td>宽松</td></tr>
+      <tr><td>Amazon</td><td>净利同比高增（云利润率提升）</td><td>中高</td><td><span class="tag tag-1">A</span>/<span class="tag tag-2">B</span>边界</td><td>AWS利润率改善驱动</td><td>关③关注AWS增速兑现</td></tr>
+      <tr><td>Meta</td><td>净利同比双位数，但AI资本开支激增</td><td>高</td><td><span class="tag tag-1">A</span>（估值）/C2重点关注</td><td>广告业务稳健但Capex-FCF压力大</td><td>关②③需警示</td></tr>
+      <tr><td>Broadcom</td><td>净利同比高增（AI ASIC+软件并购）</td><td>高</td><td><span class="tag tag-2">B</span></td><td>AI定制芯片订单驱动</td><td>关③最严，看客户集中度风险</td></tr>
+      <tr><td>Tesla</td><td>净利同比大幅波动/承压（PE失真）</td><td>明显下滑</td><td><span class="tag tag-3">C</span>偏D</td><td>交付增速放缓、净利率承压</td><td>关①警示，PE不可单用，改用PS</td></tr>
+      <tr><td>Oracle</td><td>净利同比提速（云基础设施积压订单）</td><td>高（高杠杆）</td><td><span class="tag tag-2">B</span></td><td>云积压订单驱动增速跳升</td><td>关③最严，看订单转化为收入节奏</td></tr>
+      <tr><td>AMD</td><td>净利同比高增（数据中心GPU份额提升）</td><td>中高</td><td><span class="tag tag-2">B</span></td><td>增速&gt;50%量级</td><td>关③最严</td></tr>
+    </table>
+    <p><strong>美股结构特征：</strong>A型4席（Apple/Microsoft/Alphabet/Meta偏A）、B型5席（NVIDIA/Broadcom/Amazon边界/Oracle/AMD）、C/D型1席（Tesla），整体质量优于A股/港股，但AI资本开支（Capex-FCF，C2过滤）是美股头部科技共同的隐忧，需系统性打折。</p>
+  </div>
+
+  <h2 class="sec-title">三、六维打分与四档结论（满分100，含分型加分）</h2>
+  <div class="card">
+    <table>
+      <tr><th>标的</th><th>V1估值25</th><th>V2盈利20</th><th>V3三道关15</th><th>V4CapexFCF15</th><th>V5回购β10</th><th>V6技术面15</th><th>分型加分</th><th>综合分</th><th>四档结论</th></tr>
+      <tr><td>腾讯控股</td><td>18</td><td>17</td><td>13</td><td>13</td><td>8</td><td>12</td><td>+5</td><td><strong>86</strong></td><td><span class="tag tag-1">①确定性低估</span></td></tr>
+      <tr><td>网易</td><td>19</td><td>16</td><td>13</td><td>13</td><td>7</td><td>11</td><td>+5</td><td><strong>84</strong></td><td><span class="tag tag-1">①确定性低估</span></td></tr>
+      <tr><td>京东集团-SW</td><td>20</td><td>14</td><td>12</td><td>12</td><td>8</td><td>10</td><td>+5</td><td><strong>81</strong></td><td><span class="tag tag-2">②低估</span></td></tr>
+      <tr><td>携程集团-S</td><td>17</td><td>15</td><td>12</td><td>12</td><td>6</td><td>12</td><td>+5</td><td><strong>79</strong></td><td><span class="tag tag-2">②低估</span></td></tr>
+      <tr><td>Alphabet</td><td>12</td><td>17</td><td>13</td><td>10</td><td>9</td><td>13</td><td>+5</td><td><strong>79</strong></td><td><span class="tag tag-2">②低估</span></td></tr>
+      <tr><td>宁德时代</td><td>13</td><td>15</td><td>12</td><td>10</td><td>7</td><td>12</td><td>+5</td><td><strong>74</strong></td><td><span class="tag tag-2">②低估</span></td></tr>
+      <tr><td>立讯精密</td><td>14</td><td>15</td><td>12</td><td>11</td><td>6</td><td>11</td><td>+5</td><td><strong>74</strong></td><td><span class="tag tag-2">②低估</span></td></tr>
+      <tr><td>Microsoft</td><td>8</td><td>17</td><td>12</td><td>8</td><td>8</td><td>13</td><td>+5</td><td><strong>71</strong></td><td><span class="tag tag-2">②低估</span></td></tr>
+      <tr><td>Apple</td><td>9</td><td>14</td><td>12</td><td>9</td><td>10</td><td>12</td><td>+5</td><td><strong>71</strong></td><td><span class="tag tag-2">②低估</span></td></tr>
+      <tr><td>Amazon</td><td>7</td><td>18</td><td>11</td><td>8</td><td>6</td><td>13</td><td>+3</td><td><strong>66</strong></td><td><span class="tag tag-3">③合理偏低</span></td></tr>
+      <tr><td>快手-W</td><td>12</td><td>16</td><td>10</td><td>11</td><td>5</td><td>9</td><td>+3</td><td><strong>66</strong></td><td><span class="tag tag-3">③合理偏低</span></td></tr>
+      <tr><td>AMD</td><td>6</td><td>18</td><td>8</td><td>9</td><td>4</td><td>14</td><td>+3</td><td><strong>62</strong></td><td><span class="tag tag-3">③合理偏低</span></td></tr>
+      <tr><td>小米集团-W</td><td>10</td><td>17</td><td>9</td><td>8</td><td>5</td><td>13</td><td>+3</td><td><strong>65</strong></td><td><span class="tag tag-3">③合理偏低</span></td></tr>
+      <tr><td>Broadcom</td><td>4</td><td>17</td><td>9</td><td>8</td><td>6</td><td>13</td><td>+3</td><td><strong>60</strong></td><td><span class="tag tag-3">③合理偏低</span></td></tr>
+      <tr><td>工业富联</td><td>8</td><td>15</td><td>9</td><td>8</td><td>5</td><td>9</td><td>+3</td><td><strong>57</strong></td><td><span class="tag tag-3">③合理偏低</span></td></tr>
+      <tr><td>中际旭创</td><td>5</td><td>19</td><td>8</td><td>8</td><td>4</td><td>10</td><td>+3</td><td><strong>57</strong></td><td><span class="tag tag-3">③合理偏低</span></td></tr>
+      <tr><td>新易盛</td><td>6</td><td>18</td><td>8</td><td>8</td><td>4</td><td>10</td><td>+3</td><td><strong>57</strong></td><td><span class="tag tag-3">③合理偏低</span></td></tr>
+      <tr><td>NVIDIA</td><td>3</td><td>16</td><td>7</td><td>6</td><td>5</td><td>12</td><td>+3</td><td><strong>52</strong></td><td><span class="tag tag-3">③合理偏低</span>（估值贵是核心拖累）</td></tr>
+      <tr><td>阿里巴巴-W</td><td>15</td><td>12</td><td>8</td><td>4</td><td>5</td><td>9</td><td>+5</td><td><strong>58</strong></td><td><span class="tag tag-4">④博弈区</span>（C2重扣：Capex+75%、FCF连续两季负、配股稀释）</td></tr>
+      <tr><td>Meta</td><td>6</td><td>15</td><td>9</td><td>4</td><td>6</td><td>10</td><td>+5</td><td><strong>55</strong></td><td><span class="tag tag-4">④博弈区</span>（C2 Capex-FCF重扣分）</td></tr>
+      <tr><td>联想集团</td><td>13</td><td>8</td><td>7</td><td>8</td><td>4</td><td>8</td><td>0</td><td><strong>48</strong></td><td><span class="tag tag-4">④博弈区</span>（周期，等拐点）</td></tr>
+      <tr><td>京东方A</td><td>10</td><td>6</td><td>6</td><td>7</td><td>3</td><td>7</td><td>0</td><td><strong>39</strong></td><td><span class="tag tag-4">④博弈区</span>（面板周期底部信号待确认）</td></tr>
+      <tr><td>中芯国际(A+H)</td><td>6</td><td>10</td><td>6</td><td>5</td><td>4</td><td>10</td><td>0</td><td><strong>41</strong></td><td><span class="tag tag-4">④博弈区</span>（禁用单一PE，看晶圆周期位）</td></tr>
+      <tr><td>Oracle</td><td>3</td><td>17</td><td>7</td><td>5</td><td>5</td><td>11</td><td>+3</td><td><strong>51</strong></td><td><span class="tag tag-4">④博弈区</span>（PE已透支）</td></tr>
+      <tr><td>海光信息</td><td>4</td><td>16</td><td>6</td><td>7</td><td>3</td><td>11</td><td>+3</td><td><strong>50</strong></td><td><span class="tag tag-4">④博弈区</span></td></tr>
+      <tr><td>寒武纪</td><td>2</td><td>15</td><td>5</td><td>6</td><td>3</td><td>12</td><td>+3</td><td><strong>46</strong></td><td><span class="tag tag-4">④博弈区</span>（增速兑现待验证）</td></tr>
+      <tr><td>美团-W</td><td>9</td><td>6</td><td>5</td><td>6</td><td>3</td><td>6</td><td>0</td><td><strong>35</strong></td><td><span class="tag tag-4">④博弈区</span>（竞争压制利润，关①待观察陷阱信号）</td></tr>
+      <tr><td>长鑫科技</td><td>2</td><td>12</td><td>5</td><td>4</td><td>3</td><td>8</td><td>0</td><td><strong>34</strong></td><td><span class="tag tag-4">④博弈区</span>（存储周期高位，估值透支未来涨价预期）</td></tr>
+      <tr><td>Tesla</td><td>2</td><td>4</td><td>3</td><td>6</td><td>5</td><td>8</td><td>-5</td><td><strong>23</strong></td><td><span class="tag tag-4">④博弈区</span>（关①警示，PEG失效，PS估值仍高）</td></tr>
+    </table>
+  </div>
+
+  <h2 class="sec-title">四、双排名输出（value档 / growth档，不合并）</h2>
+  <div class="card">
+    <h3 class="sub-title">Value档 Top5（确定性估值优先：低PE分位+A型+三道关全过）</h3>
+    <ul>
+      <li><strong>腾讯控股</strong>（86分）— A型、PE分位中低、三道关全过、回购力度强</li>
+      <li><strong>网易</strong>（84分）— A型、游戏现金流稳定、估值不贵</li>
+      <li><strong>京东集团-SW</strong>（81分）— A型、零售主业估值低、回购托底</li>
+      <li><strong>Alphabet</strong>（79分）— A型、云+广告双轮驱动、AI变现兑现度高</li>
+      <li><strong>携程集团-S</strong>（79分）— A型、出行复苏确定性强</li>
+    </ul>
+    <h3 class="sub-title">Growth档 Top5（成长弹性优先：高增速期权，B型可单列第一）</h3>
+    <ul>
+      <li><strong>中际旭创</strong>（B型，gr1y+242%量级，光模块AI景气期权）</li>
+      <li><strong>新易盛</strong>（B型，gr1y+91%，同光模块赛道）</li>
+      <li><strong>AMD</strong>（B型，数据中心GPU份额提升期权）</li>
+      <li><strong>Amazon</strong>（A/B边界，AWS利润率改善期权）</li>
+      <li><strong>小米集团-W</strong>（B型，汽车放量兑现期权）</li>
+    </ul>
+    <p>注：NVIDIA/寒武纪/海光信息虽增速属性强（B型特征），但因估值透支严重（V1接近0分），在growth档中排名靠后，不适合作为"高增长高弹性"首选——这正是该方法论"分型高增长≠估值排名靠前"的核心防陷阱设计。</p>
+  </div>
+
+  <h2 class="sec-title">五、跨市场共识与结构判断</h2>
+  <div class="card">
+    <p><strong>三市场共同呈现的规律</strong>（对应方法论"跨市场共识"）：</p>
+    <ul>
+      <li><strong>共识型低估标的多为分型A</strong>：腾讯控股、网易、京东、Alphabet、Microsoft、Apple——现金流稳定的成熟科技龙头，普遍好于同市场高增速但估值透支的B/C型标的</li>
+      <li><strong>共识高弹性赛道</strong>：AI算力硬件链（NVIDIA/AMD/Broadcom ↔ 中际旭创/新易盛/海光信息/寒武纪 ↔ 联想集团服务器业务）三市场同步，但普遍面临"高增速已被定价"问题（V1估值维度普遍很低）</li>
+      <li><strong>共识风险信号（C2 Capex-FCF）</strong>：Meta、阿里巴巴、Microsoft、Oracle 均因AI资本开支激增导致自由现金流承压，是当前全球科技股估值的系统性隐忧，而非单一市场问题</li>
+      <li><strong>A股/港股 vs 美股结构差异</strong>：A股/港股头部科技股中 C型（强周期）占比明显更高（存储、晶圆代工、面板），美股头部科技股则以A/B型（稳定成长+高速成长）为主，反映A股/港股科技股盈利波动性系统性高于美股，估值分位低估结论需更谨慎执行关①（防陷阱）</li>
+    </ul>
+  </div>
+
+  <div class="disclaimer">
+    <h3>六、必含免责声明</h3>
+    <ol>
+      <li>本分析未能调用真实历史PE时间序列，"分位"表述为定性水位判断而非精确百分位统计，不构成买卖点信号。</li>
+      <li>增速/ROE/CV/Capex-FCF等数据为基于公开信息的估算近似值，非最新一期财报精确重算，与官方披露可能存在偏差。</li>
+      <li>六维打分权重与分档结论为该方法论框架下的结构化推演，不构成投资建议。</li>
+      <li>财务数据存在披露延迟，请以交易所/公司官方公告为准；如需精确决策依据，建议对目标标的单独执行完整7步流程（含真实TTM重建与历史分位统计）。</li>
+    </ol>
+  </div>
+
+</div>
+
+<footer>
+  方法论 Skill 来源：<code>github.com/wzhang4096/stock-analysis/value-valuation</code>（SKILL.md / references/methodology.md / references/output-contracts.md）&nbsp;|&nbsp; 本页面由 AI 助手根据对话记录整理生成，仅供研究参考。
+</footer>
+
+</div>
+</body>
+</html>
