@@ -1,0 +1,27 @@
+name: Deploy Report via Dispatch
+
+on:
+  repository_dispatch:
+    types: [deploy-report]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Decode and write file
+        run: |
+          mkdir -p "$(dirname "${{ github.event.client_payload.file_path }}")"
+          echo "${{ github.event.client_payload.content_base64 }}" | base64 -d > "${{ github.event.client_payload.file_path }}"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "${{ github.event.client_payload.file_path }}"
+          git diff --staged --quiet || git commit -m "Deploy ${{ github.event.client_payload.file_path }} via dispatch"
+          git push
